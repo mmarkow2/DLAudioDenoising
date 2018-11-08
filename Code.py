@@ -12,13 +12,13 @@ def normGrad(alpha):
     return result
 
 def LARSGradient(negDXt, Hessian, xt, alpha, lambdaParm):
-    return  numpy.matmul(Hessian, alpha) + lambdaParm * normGrad(alpha)
+    return  negDXt + numpy.matmul(Hessian, alpha) + lambdaParm * normGrad(alpha)
 
 
 trainingSet = "trainingData/"
 testingSet = "testingData/"
-alphaIterations = 500
-dictIterations = 10
+alphaIterations = 1000
+dictIterations = 20
 
 #sampling rate for our dataset is 22050
 sampling_rate_target = 500
@@ -65,8 +65,8 @@ for dataLocation in [trainingSet, testingSet]:
                     B += numpy.matmul(xt, numpy.transpose(alpha))
 
                     #Dictionary Update
-                    for t in range(1, dictIterations + 1):
-                        for j in range(0, D.shape[1]):
+                    for t in range(dictIterations):
+                        for j in range(D.shape[1]):
                             uj = 1/A[j, j] * (B[:, j] - numpy.matmul(D, A[:, j])) + D[:, j]
                             D[:, j] = 1/ max(numpy.linalg.norm(uj), 1) * uj
                 else:
