@@ -1,0 +1,48 @@
+\documentclass[UTF8]{article}
+    \DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+    \usepackage{bbold}
+    \usepackage{bm}
+    \usepackage{amsmath}
+    \usepackage{amssymb}
+    \usepackage{graphicx} 
+    \usepackage{subfigure}
+    \usepackage{float}
+    \usepackage[colorlinks]{hyperref}
+    \title{Final Project}
+    \author{Matthew Markowitz, Lifu Xiao}
+    \date{\today}
+\begin{document}
+    \maketitle
+    \section{Introduction}
+
+    \section{Problem Statement}
+    The database is a set of noisy recordings, which have poor quality for further usage. So it make sense  to improve them. In order to remove the noisy, we propose to use online dictionary learning.
+    \section{Algorithm}
+    \subsection{Data Preparation}
+    We use \href{https://librosa.github.io/librosa/}{librosa} to prepare our data.
+    \subsection{Sparse Coding}
+    Using lasso to get
+    \\[1.5mm]
+    $\alpha_t \triangleq \mathop{\arg\min}\limits_{\alpha\in R^k} \frac{1}{2} \| x_t - D_{t-1} \alpha  \|^2_2 + \lambda \|\alpha\|_1 $
+    \\[1.5mm]
+    where
+    \\[1.5mm]
+    Then Updating A B
+    \\[1.5mm]
+    $A_t \leftarrow A_{t-1} + \alpha_t \alpha_t^T$
+    $A_t \leftarrow A_{t-1} + \alpha_t \alpha_t^T$
+    \subsection{Dictionary Update}
+    $D_t \triangleq \mathop{\arg\min}\limits_{D \in C} \frac{1}{t} \sum{ \frac{1}{2} \| x_i - D \alpha_i  \|^2_2 + \lambda \|\alpha\|_1} $
+    \\[1.5mm]
+    Where $C \triangleq {D \in R^{m\times k} s.t. \forall j = 1, ..., k, d_j^Td_j \leq 1}$ to ensure the convex.
+    \\[1.5mm]
+    Using block-coordinate descent to update dictionary
+    \\[1.5mm]
+    for each column from $j = 1 \Rightarrow k$
+    \\[1.5mm]
+    $u_j \leftarrow \frac{1}{A[j, j]}(b_j - Da_j) + d_j$
+    \\[1.5mm]
+    $d_j \leftarrow \frac{1}{\max(\|u_j\|_2, 1)}u_j$
+
+    
+\end{document}
