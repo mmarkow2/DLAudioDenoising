@@ -17,32 +17,36 @@
 
     \section{Problem Statement}
     The database is a set of noisy recordings, which have poor quality for further usage. So it make sense  to improve them. In order to remove the noisy, we propose to use online dictionary learning.
-    \section{Algorithm}
-    \subsection{Data Preparation}
-    We use \href{https://librosa.github.io/librosa/}{librosa} to prepare our data.
-    \subsection{Sparse Coding}
-    Using lasso to get
-    \\[1.5mm]
-    $\alpha_t \triangleq \mathop{\arg\min}\limits_{\alpha\in R^k} \frac{1}{2} \| x_t - D_{t-1} \alpha  \|^2_2 + \lambda \|\alpha\|_1 $
-    \\[1.5mm]
-    where
-    \\[1.5mm]
-    Then Updating A B
-    \\[1.5mm]
-    $A_t \leftarrow A_{t-1} + \alpha_t \alpha_t^T$
-    $A_t \leftarrow A_{t-1} + \alpha_t \alpha_t^T$
-    \subsection{Dictionary Update}
-    $D_t \triangleq \mathop{\arg\min}\limits_{D \in C} \frac{1}{t} \sum{ \frac{1}{2} \| x_i - D \alpha_i  \|^2_2 + \lambda \|\alpha\|_1} $
-    \\[1.5mm]
-    Where $C \triangleq {D \in R^{m\times k} s.t. \forall j = 1, ..., k, d_j^Td_j \leq 1}$ to ensure the convex.
-    \\[1.5mm]
-    Using block-coordinate descent to update dictionary
-    \\[1.5mm]
-    for each column from $j = 1 \Rightarrow k$
-    \\[1.5mm]
-    $u_j \leftarrow \frac{1}{A[j, j]}(b_j - Da_j) + d_j$
-    \\[1.5mm]
-    $d_j \leftarrow \frac{1}{\max(\|u_j\|_2, 1)}u_j$
-
     
+    
+    \section{Algorithm}
+    
+    \subsection{Data Preparation}
+    We use \href{https://librosa.github.io/librosa/}{librosa} to prepare our data. 
+    
+    \subsection{Sparse Coding}
+    Using LARS to calculate
+    \[
+        \alpha_t \triangleq \mathop{\arg\min}\limits_{\alpha\in R^k} \frac{1}{2} \| \bm{x}_t - \bm{D}_{t-1} \alpha  \|^2_2 + \lambda \|\alpha\|_1
+    \]
+    where $\bm{x} \in \mathbb{R}^{50}, \bm{D} \in \mathbb{R}^{50 \times 500} \text{ and } t \leq T \text{(maximum number of iterations)}$
+    \\
+    Then Updating $\bm{A}, \bm{B}$ by
+    \[\bm{A}_t \leftarrow \bm{A}_{t-1} + \alpha_t \alpha_t^T\]
+    \[\bm{B}_t \leftarrow \bm{B}_{t-1} + \bm{x}_t \alpha_t^T\]
+    
+    \subsection{Dictionary Update}
+    \[\bm{D}_t \triangleq \mathop{\arg\min}\limits_{\bm{D} \in C} \frac{1}{t} \sum{ \frac{1}{2} \| \bm{x}_i - \bm{D} \alpha_i  \|^2_2 + \lambda \|\alpha\|_1}
+    \]
+    Where $C \triangleq {\bm{D} \in \mathbb{R}^{50 \times 500} \text{ s.t. } \forall j = 1, ..., k, \bm{d}_j^T\bm{d}_j \leq 1}$ to ensure the convex.
+    \\
+    Using block-coordinate descent to update dictionary
+    Extracting columns of $\bm{A} \text{ and } \bm{B}$
+    \[\bm{A} = [\bm{a}_1, ..., \bm{a}_k] \in \mathbb{R}^{500 \times 500}\]
+    \[\bm{B} = [\bm{b}_1, ..., \bm{b}_k] \in \mathbb{R}^{500 \times 500}\]
+    for each column from $j = 1 \Rightarrow k$
+    \[\bm{u_j} \leftarrow \frac{1}{A[j, j]}(\bm{b}_j - \bm{Da}_j) + \bm{d}_j\]
+    \[\bm{d}_j \leftarrow \frac{1}{\max(\|\bm{u}_j\|_2, 1)}\bm{u}_j\]
+    return $\bm{D}$ for next iteration
+    \section{Experiments}
 \end{document}
