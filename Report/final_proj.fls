@@ -1,8 +1,8 @@
-PWD c:/Users/leaf_/Downloads/DLAudioDenoising/Report
+PWD d:/git/DLAudioDenoising/Report
 INPUT c:/texlive/2018/texmf.cnf
 INPUT c:/texlive/2018/texmf-dist/web2c/texmf.cnf
 INPUT c:/texlive/2018/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT c:/Users/leaf_/Downloads/DLAudioDenoising/Report/final_proj.tex
+INPUT d:/git/DLAudioDenoising/Report/final_proj.tex
 OUTPUT final_proj.log
 INPUT c:/texlive/2018/texmf-dist/tex/latex/base/article.cls
 INPUT c:/texlive/2018/texmf-dist/tex/latex/base/article.cls
@@ -152,6 +152,9 @@ INPUT c:/texlive/2018/texmf-dist/fonts/tfm/public/bbold/bbold10.tfm
 INPUT c:/texlive/2018/texmf-dist/fonts/tfm/public/bbold/bbold7.tfm
 INPUT c:/texlive/2018/texmf-dist/fonts/tfm/public/bbold/bbold5.tfm
 INPUT c:/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map
+INPUT final_proj.bbl
+INPUT final_proj.bbl
+INPUT c:/texlive/2018/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
 INPUT final_proj.aux
 INPUT ./final_proj.out
 INPUT ./final_proj.out
@@ -170,4 +173,5 @@ INPUT c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb
 INPUT c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb
 INPUT c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 INPUT c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb
+INPUT c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb
 INPUT c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb

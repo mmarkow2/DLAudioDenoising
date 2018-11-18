@@ -1,0 +1,28 @@
+\begin{thebibliography}{1}
+
+\bibitem{mairal2010online}
+Julien Mairal, Francis Bach, Jean Ponce, and Guillermo Sapiro.
+\newblock Online learning for matrix factorization and sparse coding.
+\newblock {\em Journal of Machine Learning Research}, 11(Jan):19--60, 2010.
+
+\bibitem{mcfee2015librosa}
+Brian McFee, Colin Raffel, Dawen Liang, Daniel~PW Ellis, Matt McVicar, Eric
+  Battenberg, and Oriol Nieto.
+\newblock librosa: Audio and music signal analysis in python.
+\newblock In {\em Proceedings of the 14th python in science conference}, pages
+  18--25, 2015.
+
+\bibitem{scikit-learn}
+F.~Pedregosa, G.~Varoquaux, A.~Gramfort, V.~Michel, B.~Thirion, O.~Grisel,
+  M.~Blondel, P.~Prettenhofer, R.~Weiss, V.~Dubourg, J.~Vanderplas, A.~Passos,
+  D.~Cournapeau, M.~Brucher, M.~Perrot, and E.~Duchesnay.
+\newblock Scikit-learn: Machine learning in {P}ython.
+\newblock {\em Journal of Machine Learning Research}, 12:2825--2830, 2011.
+
+\bibitem{valentini2016speech}
+Cassia Valentini-Botinhao, Xin Wang, Shinji Takaki, and Junichi Yamagishi.
+\newblock Speech enhancement for a noise-robust text-to-speech synthesis system
+  using deep recurrent neural networks.
+\newblock In {\em Interspeech}, pages 352--356, 2016.
+
+\end{thebibliography}

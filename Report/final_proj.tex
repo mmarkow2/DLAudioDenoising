@@ -11,6 +11,7 @@
     \title{Final Project}
     \author{Matthew Markowitz, Lifu Xiao}
     \date{\today}
+
 \begin{document}
     \maketitle
     \section{Introduction}
@@ -29,7 +30,7 @@
     \subsection{Sparse Coding}
     When each $x_t$ come, using LARS to calculate
     \[
-        \alpha_t \triangleq \mathop{\arg\min}\limits_{\alpha\in R^k} \frac{1}{2} \| \bm{x}_t - \bm{D}_{t-1} \alpha  \|^2_2 + \lambda \|\alpha\|_1
+        \alpha_t \triangleq \mathop{\arg\min}\limits_{\alpha\in R^k} \frac{1}{2 \cdot k} \| \bm{x}_t - \bm{D}_{t-1} \alpha  \|^2_2 + \lambda \|\alpha\|_1
     \]
     where $\bm{x} \in \mathbb{R}^{m}, \bm{D} \in \mathbb{R}^{m \times k} \text{ and } t \leq T \text{(maximum number of iterations)}$
     \\
@@ -52,4 +53,10 @@
     return $\bm{D}$ for next iteration
     \section{Experiments}
     \subsection{}
+
+    %  Reference
+    \bibliographystyle{plain}
+    \bibliography{reference}
+    \nocite{*}
+
 \end{document}
