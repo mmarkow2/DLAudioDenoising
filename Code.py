@@ -9,7 +9,8 @@ import matplotlib.pyplot as plt
 
 dataSet = "Data/"
 resultSet = "Result/"
-dictIterations = 100
+dictThreshold = 0.1
+maxDictIterations = 1000
 
 #sampling rate for our dataset is 22050
 sampling_rate_target = 5000
@@ -55,11 +56,18 @@ for filename in os.listdir(dataSet):
             audioOutput = numpy.concatenate([audioOutput, numpy.matmul(D, alpha).reshape(-1)])
             
             #Dictionary Update
-            for t in range(dictIterations):
-                print("Finished " + str(t) + "/" + str(dictIterations) + " Dictionary Iterations", end="\r")
+            counter = 0
+            while True:
+                print("Finished " + str(counter) + "/" + str(maxDictIterations) + " Dictionary Iterations", end="\r")
+                counter += 1
+                totalDiff = 0
                 for j in range(D.shape[1]):
                     uj = 1/A[j, j] * (B[:, j:j+1] - numpy.matmul(D, A[:, j:j+1])) + D[:, j:j+1]
-                    D[:, j:j+1] = 1/ max(numpy.linalg.norm(uj), 1) * uj
+                    dUpdate = 1/ max(numpy.linalg.norm(uj), 1) * uj
+                    totalDiff += numpy.linalg.norm(dUpdate - D[:, j:j+1])
+                    D[:, j:j+1] = dUpdate
+                if(totalDiff < dictThreshold or counter > maxDictIterations):
+                    break
             print("Finished Dictionary Update")
         librosa.output.write_wav(resultSet + 'Output' + filename, audioOutput, sampling_rate)
         print("Audio file processed")
