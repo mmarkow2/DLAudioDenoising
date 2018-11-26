@@ -9,14 +9,18 @@ import matplotlib.pyplot as plt
 
 dataSet = "Data/"
 resultSet = "Result/"
-dictThreshold = 0.1
-maxDictIterations = 1000
 
 #sampling rate for our dataset is 22050
 sampling_rate_target = 5000
 dictionary_size = 50
 atoms = dictionary_size * 10
-A = numpy.zeros((atoms, atoms),  numpy.float32) + 0.000001
+
+#make it so the average norm of the difference in atoms is less than 0.0001
+dictThreshold = atoms * 0.0001
+maxDictIterations = 1000
+
+
+A = numpy.zeros((atoms, atoms),  numpy.float32)
 B = numpy.zeros((dictionary_size, atoms),  numpy.float32)
 D = numpy.random.randn(dictionary_size, atoms)
 D = D.astype(numpy.float32)
@@ -28,6 +32,8 @@ D = D / numpy.linalg.norm(D, 2, 0, True)
 reg = LassoLars(alpha=0.0005, fit_intercept=False, copy_X=True)
 
 count = 0
+#bool to track when the A matrix has no zeros on the diagonal
+aNonNull = False
 for filename in os.listdir(dataSet):
     if filename.endswith(".wav"): 
         print("Sound: " + str(count))
@@ -43,7 +49,7 @@ for filename in os.listdir(dataSet):
             reg.fit(D, xt)
             alpha = reg.coef_
             alpha = alpha.astype(numpy.float32)
-            
+
             #reshape parameters
             xt = xt.reshape((xt.shape[0], 1))
             alpha = alpha.reshape((alpha.shape[0], 1))
@@ -52,23 +58,31 @@ for filename in os.listdir(dataSet):
             A += numpy.matmul(alpha, numpy.transpose(alpha))
             B += numpy.matmul(xt, numpy.transpose(alpha))
 
+            aNonNull = True
+            for i in range(A.shape[0]):
+                if (A[i,i] == 0):
+                    aNonNull = False
+                
+                
+
             #add the second to the audio output
             audioOutput = numpy.concatenate([audioOutput, numpy.matmul(D, alpha).reshape(-1)])
             
-            #Dictionary Update
-            counter = 0
-            while True:
-                print("Finished " + str(counter) + "/" + str(maxDictIterations) + " Dictionary Iterations", end="\r")
-                counter += 1
-                totalDiff = 0
-                for j in range(D.shape[1]):
-                    uj = 1/A[j, j] * (B[:, j:j+1] - numpy.matmul(D, A[:, j:j+1])) + D[:, j:j+1]
-                    dUpdate = 1/ max(numpy.linalg.norm(uj), 1) * uj
-                    totalDiff += numpy.linalg.norm(dUpdate - D[:, j:j+1])
-                    D[:, j:j+1] = dUpdate
-                if(totalDiff < dictThreshold or counter > maxDictIterations):
-                    break
-            print("Finished Dictionary Update")
+            if (aNonNull):
+                #Dictionary Update
+                dictCounter = 0
+                while True:
+                    print("Finished " + str(dictCounter) + "/" + str(maxDictIterations) + " Dictionary Iterations", end="\r")
+                    dictCounter += 1
+                    totalDiff = 0
+                    for j in range(D.shape[1]):
+                        uj = 1/A[j, j] * (B[:, j:j+1] - numpy.matmul(D, A[:, j:j+1])) + D[:, j:j+1]
+                        dUpdate = 1/ max(numpy.linalg.norm(uj), 1) * uj
+                        totalDiff += numpy.linalg.norm(dUpdate - D[:, j:j+1])
+                        D[:, j:j+1] = dUpdate
+                    if(totalDiff < dictThreshold or dictCounter > maxDictIterations):
+                        break
+                print("Finished Dictionary Update")
         librosa.output.write_wav(resultSet + 'Output' + filename, audioOutput, sampling_rate)
         print("Audio file processed")
             
