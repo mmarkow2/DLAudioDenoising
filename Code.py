@@ -17,7 +17,7 @@ atoms = dictionary_size * 10
 alphaVal = 0.025
 
 #make it so the average norm of the difference in atoms is less than 0.0001
-dictThreshold = 0.0001
+dictThreshold = 0.001
 maxDictIterations = 1000
 
 
