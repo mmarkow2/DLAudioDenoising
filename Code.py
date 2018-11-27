@@ -14,6 +14,7 @@ resultSet = "Result/"
 sampling_rate_target = 5000
 dictionary_size = 50
 atoms = dictionary_size * 10
+alphaVal = 0.025
 
 #make it so the average norm of the difference in atoms is less than 0.0001
 dictThreshold = atoms * 0.0001
@@ -29,7 +30,11 @@ D = D.astype(numpy.float32)
 D = D / numpy.linalg.norm(D, 2, 0, True)
 
 #LARS alpha initialization
-reg = LassoLars(alpha=0.0005, fit_intercept=False, copy_X=True)
+#Note: we use alpha / dictionary size because the objective function that lassolars uses 
+#(1 / (2 * n_samples)) * ||y - Xw||^2_2 + alpha * ||w||_1
+#we want to change our dictionary size without changing the ratio of our two terms weights
+#so if we use alpha / n_samples, we can then factor out the 1/n_samples
+reg = LassoLars(alpha=alphaVal / dictionary_size, fit_intercept=False, copy_X=True)
 
 count = 0
 #bool to track when the A matrix has no zeros on the diagonal
