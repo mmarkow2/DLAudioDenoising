@@ -17,7 +17,7 @@ atoms = dictionary_size * 10
 alphaVal = 0.025
 
 #make it so the average norm of the difference in atoms is less than 0.0001
-dictThreshold = atoms * 0.0001
+dictThreshold = 0.0001
 maxDictIterations = 1000
 
 
@@ -85,7 +85,7 @@ for filename in os.listdir(dataSet):
                         dUpdate = 1/ max(numpy.linalg.norm(uj), 1) * uj
                         totalDiff += numpy.linalg.norm(dUpdate - D[:, j:j+1])
                         D[:, j:j+1] = dUpdate
-                    if(totalDiff < dictThreshold or dictCounter > maxDictIterations):
+                    if(totalDiff / atoms < dictThreshold or dictCounter > maxDictIterations):
                         break
                 print("Finished Dictionary Update")
         librosa.output.write_wav(resultSet + 'Output' + filename, audioOutput, sampling_rate)
