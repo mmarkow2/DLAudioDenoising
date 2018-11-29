@@ -17,13 +17,16 @@
 
 
 \section{Introduction}
-The database is a set of noisy recordings, which have poor quality for further usage. So it make sense  to improve them. In order to remove the noise, we propose to use online dictionary learning.\\
+The database is a set of noisy recordings, which have poor quality for further usage. So it make sense  to improve them. In order to remove the noise, we propose to use online dictionary learning.
 
-There were many challenges involved with this problem. One problem involved the large number of samples that were needed to begin the dictionary updates. Unfortunately, we can not begin training the dictionary until there are no zero elements in our diagonal matrix $A$. This means that until every single dimension must have at least one alpha with a non-zero element in it. To overcome this, we refused to update the dictionary until all the zero elements were filled. However, this is also not ideal because this requires substantially more training data as the window size for our audio increased. Experimentally, this can be overcome by adding a random small constant to our $A$ before we start (such as 0.000000001), however, this is little to no theoretical backing for this, so we did not take this route.\\
 
-For the problem that we are trying to solve, the state of the art involves using a technique called Spectral Subtraction\cite{upadhyay2015speech}. The general idea in this technique involves estimating the spectrum of background noise from pauses in speech. This computed spectrum is then subtracted from the full speech spectrum with the hope that this will produce the noise free speech. The audio is typically processed in frames.
+There were many challenges involved with this problem. One problem involved the large number of samples that were needed to begin the dictionary updates. Unfortunately, we can not begin training the dictionary until there are no zero elements in our diagonal matrix $A$. This means that until every single dimension must have at least one alpha with a non-zero element in it. To overcome this, we refused to update the dictionary until all the zero elements were filled. However, this is also not ideal because this requires substantially more training data as the window size for our audio increased. Experimentally, this can be overcome by adding a random small constant to our $A$ before we start (such as 0.000000001), however, this is little to no theoretical backing for this, so we did not take this route.
 
-Another widely used method is deep recurrent neural networks\cite{valentini2016speech} have good performance on extracting acoustic features from noisy data. But it have a high computation cost.
+
+For the problem that we are trying to solve, the state of the art involves using a technique called Spectral Subtraction\cite{upadhyay2015speech}. The general idea in this technique involves estimating the spectrum of background noise from pauses in speech. however there are some limitations. It assume that the background noise in uncorrelated with the speech and there are pauses in the audio that can be used to estimate the background noise. This may not be true for all audio signals. Also, it assumes that the spectrum of background noise is constant which it may not be.
+
+
+Another widely used method is deep recurrent neural networks\cite{valentini2016speech} which have good performance on extracting acoustic features from noisy data. It use a parallel database of noisy and clean acoustics parameters as input and output. But it have a high computation cost.
 
 \section{Problem Statement}
 We used a python library known as librosa to import our audio\cite{valentini2017noisy}. The audio recordings found in our test set had a sampling rate of 22050. This meant that every second of audio held approximately 22,000 numbers to represent it. For this reason, down sampling became necessary. Although some sacrifice in audio quality was necessary, we were able to reduce the sampling rate to 5,000, which made our calculations more feasible. The 5,000 points per second was still computationally intensive, but we found that we could break each second into X millisecond windows to ease computation further without sacrificing much quality. We found that a window size of 50 points or 50/5,000 = 1/100 second windows worked well for our dataset.
@@ -66,6 +69,8 @@ return $\bm{D}$ for next iteration
 
 To visualize our result, we picked a 6 seconds segment of the output audio.
 The Original, Downsampled figures and the Clean data which is used for a baseline are as follows.
+
+
 \begin{figure}[H]
     \centering
     \subfigure[Original]{
@@ -80,7 +85,9 @@ The Original, Downsampled figures and the Clean data which is used for a baselin
     \caption{Original , Downsampled and the Clean data}
 \end{figure}
 
+
 We set $\lambda = 0.025$ and test different window sizes for the denoising program. The results are presented in Figure 2
+
 
 \begin{figure}[H]
     \centering
@@ -105,6 +112,7 @@ We set $\lambda = 0.025$ and test different window sizes for the denoising progr
     \caption{Denoising result under different window sizes}
 \end{figure}
 
+
 The smaller window sizes give the better result. Now we choose $k = 500 \text{ and } m = 50$ for the online dictionary learning step and the result generated by different $\lambda$ are presented in Figure 3.
 
 
@@ -125,9 +133,36 @@ The smaller window sizes give the better result. Now we choose $k = 500 \text{ a
     \caption{Denoising result under different $\lambda$}
 \end{figure}
 
-We note that when $\lambda < 0.05$ as the $\lambda$ increase, the result turned to be better.
+We note that $\lambda = 0.025$ have the best performance among three other  $\lambda$s.
 
-As a result, online dictionary learning is a robust and efficient way for audio denoising.
+So we set $\lambda = 0.025$ to test different atoms.
+
+\begin{figure}[H]
+    \centering
+    \subfigure[1$\times$atoms]{
+        \label{Fig.sub4.1}
+        \includegraphics[width=0.4\textwidth]{image/1x.png}}
+    \subfigure[2$\times$atoms]{
+        \label{Fig.sub4.2}
+        \includegraphics[width=0.4\textwidth]{image/2x.png}}
+    \subfigure[5$\times$atoms]{
+        \label{Fig.sub4.3}
+        \includegraphics[width=0.4\textwidth]{image/5x.png}}
+    \subfigure[7$\times$atoms]{
+        \label{Fig.sub4.4}
+        \includegraphics[width=0.4\textwidth]{image/7x.png}}
+    \subfigure[10$\times$atoms]{
+        \label{Fig.sub4.5}
+        \includegraphics[width=0.4\textwidth]{image/10x.png}}
+    \subfigure[15$\times$atoms]{
+        \label{Fig.sub4.6}
+        \includegraphics[width=0.4\textwidth]{image/15x.png}}
+    \caption{Denoising result under different atoms}
+\end{figure}
+
+After we examine the output, the $15 \times \text{atoms}$ turned to have a better precise.
+
+Our experiments have showed that online dictionary learning is very efficient and robust on audio denoising problem.
 
 %  Reference
 \bibliographystyle{unsrt}
