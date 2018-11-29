@@ -20,11 +20,17 @@ alphaVal = 0.025
 dictThreshold = 0.001
 maxDictIterations = 1000
 
+#the minibatch size
+batchSize = 15
+
 
 A = numpy.zeros((atoms, atoms),  numpy.float32)
 B = numpy.zeros((dictionary_size, atoms),  numpy.float32)
+aTemp = numpy.zeros((atoms, atoms))
+bTemp = numpy.zeros((dictionary_size, atoms))
 D = numpy.random.randn(dictionary_size, atoms)
 D = D.astype(numpy.float32)
+batchCounter = 0
 
 #enforce condition that all columns have less than unit norm
 D = D / numpy.linalg.norm(D, 2, 0, True)
@@ -58,10 +64,19 @@ for filename in os.listdir(dataSet):
             #reshape parameters
             xt = xt.reshape((xt.shape[0], 1))
             alpha = alpha.reshape((alpha.shape[0], 1))
+            
+            #add to batch
+            aTemp += numpy.matmul(alpha, numpy.transpose(alpha))
+            bTemp += numpy.matmul(xt, numpy.transpose(alpha))
+            batchCounter += 1
 
             print("Finished Alpha Update")
-            A += numpy.matmul(alpha, numpy.transpose(alpha))
-            B += numpy.matmul(xt, numpy.transpose(alpha))
+            if (batchCounter >= batchSize):
+                A += aTemp / batchSize
+                B += bTemp / batchSize
+                aTemp = numpy.zeros((atoms, atoms))
+                bTemp = numpy.zeros((dictionary_size, atoms))
+                batchCounter = 0
 
             aNonNull = True
             for i in range(A.shape[0]):
@@ -73,7 +88,7 @@ for filename in os.listdir(dataSet):
             #add the second to the audio output
             audioOutput = numpy.concatenate([audioOutput, numpy.matmul(D, alpha).reshape(-1)])
             
-            if (aNonNull):
+            if (aNonNull and batchCounter == 0):
                 #Dictionary Update
                 dictCounter = 0
                 while True:
@@ -90,6 +105,11 @@ for filename in os.listdir(dataSet):
                 print("Finished Dictionary Update")
         librosa.output.write_wav(resultSet + 'Output' + filename, audioOutput, sampling_rate)
         print("Audio file processed")
+        #If we have processed seven audio files, output random atoms from the dictionary
+        if (count == 7):
+            indices = numpy.random.choice(D.shape[1], size=7, replace=False)
+            for ind in indices:
+                librosa.output.write_wav(resultSet + "Atom " + str(ind) + ".wav", D[:, ind].reshape(-1), sampling_rate)
             
 #plt.figure(figsize=(12, 4))
 #librosa.display.waveplot(data, sr=sampling_rate)
