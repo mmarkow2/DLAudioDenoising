@@ -20,7 +20,7 @@
 The database is a set of noisy recordings\cite{valentini2017noisy}, which have poor quality for further usage.  So it make sense  to improve them. In order to remove the noise, we propose to use online dictionary learning\cite{mairal2010online}.
 
 
-There were many challenges involved with this problem. One problem involved the large number of samples that were needed to begin the dictionary updates. Unfortunately, we can not begin training the dictionary until there are no zero elements in our diagonal matrix. This means that until every single dimension must have at least one alpha with a non-zero element in it. To overcome this, we refused to update the dictionary until all the zero elements were filled. However, this is also not ideal because this requires substantially more training data as the window size for our audio increased. Experimentally, this can be overcome by adding a random small constant to our diagonal matrix before we start (such as 0.000000001), however, this is little to no theoretical backing for this, so we did not take this route.
+There were many challenges involved with this problem. One problem involved the large number of samples that were needed to begin the dictionary updates. Unfortunately, we can't update the dictionary until every atom has been used at least once. To overcome this, we refused to update the dictionary until all the zero elements were filled. However, this is also not ideal because this requires substantially more training data as the window size for our audio increased. Experimentally, this can be overcome by adding a random small constant before we start (such as 0.000000001), however, this is little to no theoretical backing for this, so we did not take this route.
 
 
 For the problem that we are trying to solve, the state of the art involves using a technique called Spectral Subtraction\cite{upadhyay2015speech}. The general idea in this technique involves estimating the spectrum of background noise from pauses in speech. however there are some limitations. It assume that the background noise in uncorrelated with the speech and there are pauses in the audio that can be used to estimate the background noise. This may not be true for all audio signals. Also, it assumes that the spectrum of background noise is constant which it may not be.
@@ -47,9 +47,9 @@ When each $x_t$ come, using LARS\cite{scikit-learn} to calculate
 \]
 where $\bm{x} \in \mathbb{R}^{m}, \bm{D} \in \mathbb{R}^{m \times k} \text{ and } t \leq T \text{(maximum number of iterations)}$
 \\
-Then updating $\bm{A}, \bm{B}$ by
-\[\bm{A}_t \leftarrow \bm{A}_{t-1} + \alpha_t \alpha_t^T\]
-\[\bm{B}_t \leftarrow \bm{B}_{t-1} + \bm{x}_t \alpha_t^T\]
+Then updating $\bm{A}, \bm{B}$ with mini-batch by
+\[\bm{A}_t \leftarrow \bm{A}_{t-1} + \frac{1}{\eta}\sum\limits_{i=1}^{\eta}\alpha_{t,i} \alpha_{t,i}^T\]
+\[\bm{B}_t \leftarrow \bm{B}_{t-1} + \frac{1}{\eta}\sum\limits_{i=1}^{\eta}\bm{x}_{t,i} \alpha_{t,i}^T\]
 
 \subsection{Dictionary Update}
 \[\bm{D}_t \triangleq \mathop{\arg\min}\limits_{\bm{D} \in C} \frac{1}{t} \sum{ \frac{1}{2} \| \bm{x}_i - \bm{D} \alpha_i  \|^2_2 + \lambda \|\alpha\|_1}
