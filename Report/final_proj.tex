@@ -47,7 +47,7 @@ When each $x_t$ come, using LARS\cite{scikit-learn} to calculate
 \]
 where $\bm{x} \in \mathbb{R}^{m}, \bm{D} \in \mathbb{R}^{m \times k} \text{ and } t \leq T \text{(maximum number of iterations)}$
 \\
-Then updating $\bm{A}, \bm{B}$ with mini-batch by
+Then updating $\bm{A}, \bm{B}$ with mini-batch by where $\eta$ refers to the batch size.
 \[\bm{A}_t \leftarrow \bm{A}_{t-1} + \frac{1}{\eta}\sum\limits_{i=1}^{\eta}\alpha_{t,i} \alpha_{t,i}^T\]
 \[\bm{B}_t \leftarrow \bm{B}_{t-1} + \frac{1}{\eta}\sum\limits_{i=1}^{\eta}\bm{x}_{t,i} \alpha_{t,i}^T\]
 
